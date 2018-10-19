@@ -9,26 +9,27 @@ public class RegisterSwipe : MonoBehaviour {
         left
     };
 
-    public delegate void Swipe(Swipes swipeDir);
-    public static event Swipe OnSwipe;
-
-	// Use this for initialization
-	void Start () {
-		
+    //private ObstaclesSpawner obstaclesSpawner;
+    private MoveOnSwipe moveOnSwipeOfFirstObst;
+	void Start ()
+    {
+        //obstaclesSpawner = FindObjectOfType(typeof(ObstaclesSpawner)) as ObstaclesSpawner;
 	}
 	
-	// Update is called once per frame
 	void Update ()
     {
 		if(Input.GetKeyDown(KeyCode.D))
         {
-            if (OnSwipe != null)
-                OnSwipe(Swipes.right);
+            moveOnSwipeOfFirstObst.Move(Swipes.right);
         }
         else if(Input.GetKeyDown(KeyCode.A))
         {
-            if (OnSwipe != null)
-                OnSwipe(Swipes.left);
+            moveOnSwipeOfFirstObst.Move(Swipes.left);
         }
+    }
+
+    public void UpdateFirstObstacle(MoveOnSwipe firstObstacleMoveScript)
+    {
+        moveOnSwipeOfFirstObst = firstObstacleMoveScript;
     }
 }
