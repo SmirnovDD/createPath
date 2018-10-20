@@ -285,6 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f1425d603984204d9ca497789e189ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnBlockTime: 0.5
   obstaclePrefab:
   - {fileID: 1597657507541416, guid: 64a37afc28097f14f8b349e52e312c36, type: 2}
   obstacleMoveScripts: []

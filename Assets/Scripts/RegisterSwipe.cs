@@ -18,6 +18,8 @@ public class RegisterSwipe : MonoBehaviour {
 	
 	void Update ()
     {
+        if (!moveOnSwipeOfFirstObst)
+            return;
 		if(Input.GetKeyDown(KeyCode.D))
         {
             moveOnSwipeOfFirstObst.Move(Swipes.right);
