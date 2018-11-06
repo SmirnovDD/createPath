@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 65472846874447314}
   - component: {fileID: 114427167184945398}
   - component: {fileID: 95262244310047308}
+  - component: {fileID: 114532957505786586}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -128,3 +129,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 95262244310047308}
+  obstacleSpawner: {fileID: 0}
+  leftPos: 0
+  rightPos: 0
+  bottomPos: 0
+  moved: 0
+--- !u!114 &114532957505786586
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1597657507541416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91ebd82e0e7c9be4a8bf6db3eba7c741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
