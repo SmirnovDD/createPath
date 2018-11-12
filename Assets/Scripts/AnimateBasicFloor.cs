@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class AnimateBasicFloor : MoveOnSwipe {
+﻿public class AnimateBasicFloor : MoveOnSwipe {
     public override void Move(RegisterSwipe.Swipes swipeDir)
     {
         if(swipeDir == RegisterSwipe.Swipes.right && leftPos)

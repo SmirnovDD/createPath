@@ -9,7 +9,8 @@ public class RegisterSwipe : MonoBehaviour {
         right,
         left,
         up,
-        down
+        down,
+        tap
     };
 
     public bool Tap { get { return tap; } }
@@ -47,7 +48,7 @@ public class RegisterSwipe : MonoBehaviour {
         }
         else if(Input.GetKeyDown(KeyCode.Space))
         {
-            tap = true;
+            moveOnSwipeOfFirstObst.Move(Swipes.tap);
         }
         #endregion
         #region Mobile Inputs
@@ -116,9 +117,13 @@ public class RegisterSwipe : MonoBehaviour {
         {
             moveOnSwipeOfFirstObst.Move(Swipes.up);
         }
+        else if(swipeDown)
+        {
+            moveOnSwipeOfFirstObst.Move(Swipes.down);
+        }
         else if (tap)
         {
-            tap = true;
+            moveOnSwipeOfFirstObst.Move(Swipes.tap);
         }
     }
     public void UpdateFirstObstacle(MoveOnSwipe firstObstacleMoveScript)
