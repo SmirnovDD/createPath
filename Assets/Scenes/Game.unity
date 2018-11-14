@@ -551,8 +551,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f1425d603984204d9ca497789e189ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnBlockTime: 0.45
-  speedIncrement: 0.05
+  spawnBlockTime: 0.35
+  speedIncrement: 0.01
   minSpawnBlockTime: 0.3
   regularBlocksBetweenTraps: 3
   obstaclePrefab:
@@ -561,6 +561,7 @@ MonoBehaviour:
   - {fileID: 1864230814994410, guid: 34d383bd87145594d95ed1b17eb31361, type: 2}
   - {fileID: 1203422372215032, guid: 1c73d3f33933ba4478f83ad9668b1ed2, type: 2}
   obstacleMoveScripts: []
+  checkForPlayerPass: 0
 --- !u!114 &534669908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -574,8 +575,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   play: {fileID: 769798865}
   score: {fileID: 658726973}
+  highScroreMark: {fileID: 1714211480759324, guid: 36f43ccb97c011c4abead518c7e78c17,
+    type: 2}
   scoreNum: 0
   nextLevel: 1
+  highScore: 0
 --- !u!1001 &596902618
 Prefab:
   m_ObjectHideFlags: 0
@@ -1374,6 +1378,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameOver: 0
   startPos: {x: 0, y: 0, z: 0}
+  movementSpeed: 2.857143
 --- !u!135 &1296930277
 SphereCollider:
   m_ObjectHideFlags: 0

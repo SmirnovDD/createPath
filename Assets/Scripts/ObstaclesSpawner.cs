@@ -55,7 +55,7 @@ public class ObstaclesSpawner : MonoBehaviour {
     }
     public void SpawnNewBlock()
     {
-        if (gc.scoreNum < 2500)
+        if (gc.scoreNum < 1200)
         {
             if (regularBlocksBetweenTraps > 0)
             {
@@ -76,7 +76,7 @@ public class ObstaclesSpawner : MonoBehaviour {
             newObstacle = Instantiate(obstaclePrefab[0], new Vector3(posX, 0, spawnPos.z + 1f), Quaternion.identity);
 
         }
-        else if (gc.scoreNum < 6000)
+        else if (gc.scoreNum < 3500)
         {
             gc.nextLevel = 2;
             if (regularBlocksBetweenTraps > 0)
@@ -95,7 +95,7 @@ public class ObstaclesSpawner : MonoBehaviour {
             }
             newObstacle = Instantiate(obstaclePrefab[0], new Vector3(posX, posY, spawnPos.z + 1f), Quaternion.identity);
         }
-        else if (gc.scoreNum < 15000)
+        else if (gc.scoreNum < 7000)
         {
             gc.nextLevel = 3;
             if (regularBlocksBetweenTraps > 0)
@@ -121,7 +121,7 @@ public class ObstaclesSpawner : MonoBehaviour {
             }
             newObstacle = Instantiate(obstaclePrefab[0], new Vector3(posX, posY, spawnPos.z + 1f), Quaternion.identity);
         }
-        else if (gc.scoreNum < 17000)
+        else if (gc.scoreNum < 8000)
         {
             if (regularBlocksBetweenTraps < 6)
             {
@@ -136,7 +136,7 @@ public class ObstaclesSpawner : MonoBehaviour {
                 regularBlocksBetweenTraps = 3;
             }
         }
-        else if (gc.scoreNum < 22000)
+        else if (gc.scoreNum < 11000)
         {
             gc.nextLevel = 4;
             if (regularBlocksBetweenTraps > 0)
@@ -168,7 +168,7 @@ public class ObstaclesSpawner : MonoBehaviour {
                     newObstacle = Instantiate(obstaclePrefab[1], new Vector3(posX, posY, spawnPos.z + 1f), Quaternion.identity);
             }
         }
-        else if (gc.scoreNum < 23000)
+        else if (gc.scoreNum < 12500)
         {
 
             if (noBlocksBetweenTraps > 0)
@@ -191,7 +191,7 @@ public class ObstaclesSpawner : MonoBehaviour {
                 regularBlocksBetweenTraps = 0;
             }
         }
-        else if (gc.scoreNum < 30000 && canContinue)
+        else if (gc.scoreNum < 20000 && canContinue)
         {
             gc.nextLevel = 5;
             if (noBlocksBetweenTraps > 0)

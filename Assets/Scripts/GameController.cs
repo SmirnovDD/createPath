@@ -6,12 +6,15 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour {
     public Button play;
     public Text score;
+    public GameObject highScroreMark;
     public float scoreNum;
     public float nextLevel = 1;
+    public float highScore;
     private bool gameStarted;
     private float scoreIncrement = 3f;
 
     private PlayerMovement pm;
+    private bool setHighScore;
 	// Use this for initialization
 	void Awake ()
     {
@@ -20,14 +23,27 @@ public class GameController : MonoBehaviour {
     private void Start()
     {
         pm = FindObjectOfType(typeof(PlayerMovement)) as PlayerMovement;
+        highScore = PlayerPrefs.GetFloat("highScore");
     }
-    // Update is called once per frame
+
     void Update ()
     {
 		if(gameStarted && !pm.gameOver)
         {
             scoreNum += scoreIncrement * Time.deltaTime * 60;
             score.text = ((int)scoreNum).ToString();
+            if(highScore > 0 && (scoreNum > highScore - 14 / pm.movementSpeed * 180) && !setHighScore) //1100
+            {
+                Instantiate(highScroreMark, new Vector3(0, 0, pm.gameObject.transform.position.z + 14), Quaternion.identity);
+                setHighScore = true;
+            }
+        }
+        else if(pm.gameOver)
+        {
+            if (scoreNum > highScore)
+            {
+                PlayerPrefs.SetFloat("highScore", scoreNum); //Сохраняем рекорд
+            }
         }
 	}
 

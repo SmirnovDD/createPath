@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour {
     public bool gameOver;
     public Vector3 startPos;
-    private float movementSpeed;
+    public float movementSpeed;
     private ObstaclesSpawner obstSpawnScript;
     private Rigidbody rigidB;
     private float jumpDst;
@@ -51,6 +51,7 @@ public class PlayerMovement : MonoBehaviour {
     {
         Invoke("RestartGame", 1.5f);
         gameOver = true;
+        StopCoroutine(Jump());
         Rigidbody rigidB = GetComponent<Rigidbody>();
         rigidB.freezeRotation = true;
         rigidB.useGravity = true;
