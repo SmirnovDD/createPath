@@ -10,7 +10,8 @@ public class RegisterSwipe : MonoBehaviour {
         left,
         up,
         down,
-        tap
+        tap,
+        hold
     };
 
     public bool Tap { get { return tap; } }
@@ -21,7 +22,7 @@ public class RegisterSwipe : MonoBehaviour {
     public bool SwipeDown { get { return swipeDown; } }
 
     private MoveOnSwipe moveOnSwipeOfFirstObst;
-    private bool tap, swipeLeft, swipeRight, swipeDown, swipeUp;
+    private bool tap, hold, swipeLeft, swipeRight, swipeDown, swipeUp;
     private Vector2 swipeDelta, startTouch;
 	
 	void Update ()
@@ -50,18 +51,24 @@ public class RegisterSwipe : MonoBehaviour {
         {
             moveOnSwipeOfFirstObst.Move(Swipes.tap);
         }
+        else if(Input.GetKey(KeyCode.Space))
+        {
+            moveOnSwipeOfFirstObst.Move(Swipes.hold);
+        }
         #endregion
-        #region Mobile Inputs
+            #region Mobile Inputs
         if (Input.touchCount > 0)
         {
             if (Input.touches[0].phase == TouchPhase.Began)
             {
                 tap = true;
+                hold = true;
                 startTouch = Input.touches[0].position;
             }
             else if (Input.touches[0].phase == TouchPhase.Ended || Input.touches[0].phase == TouchPhase.Canceled)
             {
                 startTouch = swipeDelta = Vector2.zero;
+                hold = false;
             }
         }
         #endregion
@@ -99,7 +106,6 @@ public class RegisterSwipe : MonoBehaviour {
 
             startTouch = swipeDelta = Vector2.zero;
         }
-
         Swipe();
     }
 
@@ -124,6 +130,10 @@ public class RegisterSwipe : MonoBehaviour {
         else if (tap)
         {
             moveOnSwipeOfFirstObst.Move(Swipes.tap);
+        }
+        else if (hold)
+        {
+            moveOnSwipeOfFirstObst.Move(Swipes.hold);
         }
     }
     public void UpdateFirstObstacle(MoveOnSwipe firstObstacleMoveScript)

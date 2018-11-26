@@ -130,11 +130,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 95262244310047308}
   obstacleSpawner: {fileID: 0}
+  playerMovement: {fileID: 0}
   leftPos: 0
   rightPos: 0
   bottomPos: 0
   topPos: 0
   moved: 0
+  neutralPosSpikedFloor: 0
+  trampoline: 0
+  playerInRange: 0
 --- !u!114 &114532957505786586
 MonoBehaviour:
   m_ObjectHideFlags: 1

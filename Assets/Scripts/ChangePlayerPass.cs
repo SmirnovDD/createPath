@@ -8,7 +8,10 @@ public class ChangePlayerPass : MonoBehaviour {
     }
     public void PlayerPass()
     {
-        obstSp.checkForPlayerPass = true;
-        obstSp.RemoveFirstObstacle();
+        if (obstSp != null)
+        {
+            obstSp.checkForPlayerPass = true;
+            obstSp.RemoveFirstObstacle();
+        }
     }
 }

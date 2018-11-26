@@ -14,6 +14,7 @@ public class MoveOnSwipe : MonoBehaviour {
     public bool neutralPosSpikedFloor;
     public bool trampoline;
     public bool playerInRange;
+    public float iceMeltTime = 0f;
     // Use this for initialization
     void Start ()
     {
@@ -44,13 +45,28 @@ public class MoveOnSwipe : MonoBehaviour {
     {
         neutralPosSpikedFloor = true;
     }
+    public void SelfDestroy()
+    {
+        Invoke("DestroyThis", 10f);
+    }
 
+    private void DestroyThis()
+    {
+        Destroy(gameObject);
+    }
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Player"))
         {
             playerInRange = true;
             anim.SetBool("ready", true);
+
+            if (!obstacleSpawner.swipeHelpTr)
+            {
+                obstacleSpawner.swipeAnim.gameObject.SetActive(true);
+                obstacleSpawner.swipeAnim.SetTrigger("tap");
+                obstacleSpawner.swipeHelpTr = true;
+            }
         }
     }
 }
