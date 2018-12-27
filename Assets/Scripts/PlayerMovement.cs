@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour {
     public bool gameOver;
     public Vector3 startPos;
+    public Animator anim;
     public float movementSpeed;
     private ObstaclesSpawner obstSpawnScript;
     private Rigidbody rigidB;
-    private Animator anim;
     private float jumpDst;
     void Start ()
     {
@@ -34,7 +34,8 @@ public class PlayerMovement : MonoBehaviour {
     }
     IEnumerator Jump()
     {
-        anim.SetTrigger("jump");
+        if(anim)
+            anim.SetTrigger("jump");
         while (jumpDst - transform.position.z > 2.2)
         {
             transform.position = new Vector3(startPos.x, Mathf.LerpUnclamped(transform.position.y, 4, Time.deltaTime * 2), transform.position.z);
@@ -76,6 +77,12 @@ public class PlayerMovement : MonoBehaviour {
         }
         else if (dir == 4)
             rigidB.velocity = Vector3.zero;
+        else if(dir == 5)
+        {
+            rigidB.AddForce(Vector3.back * 90 + Vector3.up * 400 + Vector3.left * 90);
+            CameraFollow cameraFollowScript = FindObjectOfType(typeof(CameraFollow)) as CameraFollow;
+            cameraFollowScript.cameraShake = true;
+        }
         Destroy(obstSpawnScript);
     }
 

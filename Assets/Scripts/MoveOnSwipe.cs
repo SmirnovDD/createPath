@@ -8,7 +8,7 @@ public class MoveOnSwipe : MonoBehaviour {
     [HideInInspector]
     public ObstaclesSpawner obstacleSpawner;
     public PlayerMovement playerMovement;
-
+    public Rigidbody rigidB;
     public bool leftPos, rightPos, bottomPos, topPos;
     public bool moved;
     public bool neutralPosSpikedFloor;
@@ -21,6 +21,8 @@ public class MoveOnSwipe : MonoBehaviour {
         obstacleSpawner = FindObjectOfType(typeof(ObstaclesSpawner)) as ObstaclesSpawner;
         anim = GetComponent<Animator>();
         playerMovement = FindObjectOfType(typeof(PlayerMovement)) as PlayerMovement;
+        if (gameObject.CompareTag("Barrel"))
+            rigidB = GetComponent<Rigidbody>();
 
         if (transform.position.x == -1)
             leftPos = true;
@@ -40,19 +42,23 @@ public class MoveOnSwipe : MonoBehaviour {
     {
 
     }
-
+    public void Throw(float force)
+    {
+        rigidB.useGravity = true;
+        rigidB.AddForce(Vector3.right * force);
+        rigidB.AddTorque(Vector3.right * force);
+    }
     public void SetNeutralPosition()
     {
         neutralPosSpikedFloor = true;
     }
     public void SelfDestroy()
     {
-        Invoke("DestroyThis", 10f);
+        Destroy(gameObject, 10f);
     }
-
-    private void DestroyThis()
+    public void LowerHeight()
     {
-        Destroy(gameObject);
+        transform.position += Vector3.down * 0.01f;
     }
     private void OnTriggerEnter(Collider other)
     {

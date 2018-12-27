@@ -4,6 +4,7 @@ public class CameraFollow : MonoBehaviour {
     public bool cameraShake;
     private Transform playerTransform;
     private int numberOfShakes = 0;
+    private float shakeDecrease;
 	// Use this for initialization
 	void Start ()
     {
@@ -22,8 +23,8 @@ public class CameraFollow : MonoBehaviour {
     private IEnumerator Shake()
     {
         numberOfShakes++;
-        float randPosY = Random.Range(-0.4f, 0.4f);
-        float randPosZ = Random.Range(-0.4f, 0.4f);
+        float randPosY = Random.Range(-0.4f + shakeDecrease, 0.4f - shakeDecrease);
+        float randPosZ = Random.Range(-0.4f + shakeDecrease, 0.4f - shakeDecrease);
         float y = transform.position.y;
         float z = transform.position.z;
         float shakeTimer = Time.time + 0.04f;
@@ -33,7 +34,7 @@ public class CameraFollow : MonoBehaviour {
             transform.position = new Vector3(transform.position.x, Mathf.Lerp(transform.position.y, y + randPosY, 1 - (shakeTimer - Time.time)), Mathf.Lerp(transform.position.z, z + randPosZ, 1 - (shakeTimer - Time.time)));
             yield return null;
         }
-
+        shakeDecrease += 0.05f;
         if (numberOfShakes == 5)
             StopCoroutine(Shake());
         else

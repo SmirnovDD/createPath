@@ -10,10 +10,12 @@ public class ObstaclesSpawner : MonoBehaviour {
     public float regularBlocksBetweenTraps;
     public Image swipeIcon;
     public GameObject[] obstaclePrefab;
+    public GameObject explosionPrefab;
+    public GameObject coinPrefab;
     public Material basicFloorMat;
     public Material defaultFloorMat;
     public Material spikedFloorMat;
-    public Material trampolineMaterial, trampolineBaseMaterial, iceCubeMaterial;
+    public Material trampolineMaterial, trampolineBaseMaterial, iceCubeMaterial, barrelMaterial;
     public List<MoveOnSwipe> obstacleMoveScripts = new List<MoveOnSwipe>();
     [HideInInspector]
     public bool checkForPlayerPass, swipeHelpTr;
@@ -34,16 +36,23 @@ public class ObstaclesSpawner : MonoBehaviour {
     private float oldLevel = 1;
     private float obstacleType;
     private float noBlocksBetweenTraps;
-    private bool canContinue;
     private float colorLerpTimer;
-    private bool swipeHelpL, swipeHelpU, swipeHelpD, swipeHelpTap, swipeHelpSpike, allChecked;
+    private bool swipeHelpL, swipeHelpU, swipeHelpD, swipeHelpTap, swipeHelpSpike, swipeHelpBarrel, swipeHelpIce, allChecked;
     void Start ()
     {
         swipeAnim = swipeIcon.GetComponent<Animator>();
-        iceCubeMaterial.color = basicFloorMat.color = defaultFloorMat.color;
+        barrelMaterial.color = basicFloorMat.color = defaultFloorMat.color;
         gc = FindObjectOfType(typeof(GameController)) as GameController;
         registerSwipeScript = FindObjectOfType(typeof (RegisterSwipe)) as RegisterSwipe;
-        newObstacle = Instantiate(obstaclePrefab[0], new Vector3(-1, 0, 3), Quaternion.identity);
+        int randomFirstObst = Random.Range(-3, 2);
+        if(randomFirstObst <= 0)
+            newObstacle = Instantiate(obstaclePrefab[0], new Vector3(-1, 0, 3), Quaternion.identity);
+        else
+        {
+            swipeHelpBarrel = true;
+            newObstacle = Instantiate(obstaclePrefab[5], new Vector3(0, 1, 3), Quaternion.identity);
+            Instantiate(obstaclePrefab[0], new Vector3(0, 0, 3), Quaternion.identity);
+        }
         spawnPos = newObstacle.transform.position;
         StartCoroutine(SwipeHelp(0));
         obstacleMoveScripts.Add(newObstacle.GetComponent<MoveOnSwipe>());
@@ -67,6 +76,7 @@ public class ObstaclesSpawner : MonoBehaviour {
         {
             spawnBlockTime = (spawnBlockTime > minSpawnBlockTime) ? spawnBlockTime - speedIncrement : spawnBlockTime;
             oldLevel = gc.nextLevel;
+            playerMovement.anim.speed += speedIncrement;
             colorLerpTimer = Time.time + 1;
             randomColor = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 1);
         }
@@ -74,7 +84,7 @@ public class ObstaclesSpawner : MonoBehaviour {
         {
             basicFloorMat.color = Color.Lerp(basicFloorMat.color, randomColor, 1 - (colorLerpTimer - Time.time));
             spikedFloorMat.color = Color.Lerp(spikedFloorMat.color, randomColor, 1 - (colorLerpTimer - Time.time));
-            iceCubeMaterial.color = trampolineBaseMaterial.color = trampolineMaterial.color = Color.Lerp(trampolineMaterial.color, randomColor, 1 - (colorLerpTimer - Time.time));
+            barrelMaterial.color = iceCubeMaterial.color = trampolineBaseMaterial.color = trampolineMaterial.color = Color.Lerp(trampolineMaterial.color, randomColor, 1 - (colorLerpTimer - Time.time));
         }
     }
     public void SpawnNewBlock()
@@ -149,9 +159,8 @@ public class ObstaclesSpawner : MonoBehaviour {
         {
             if (regularBlocksBetweenTraps < 6)
             {
-                posX = 0;
                 regularBlocksBetweenTraps++;
-                newObstacle = Instantiate(obstaclePrefab[0], new Vector3(posX, 0, spawnPos.z + 1f), Quaternion.identity);
+                newObstacle = Instantiate(obstaclePrefab[0], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
             }
 
             else
@@ -202,7 +211,7 @@ public class ObstaclesSpawner : MonoBehaviour {
                     newObstacle = Instantiate(obstaclePrefab[1], new Vector3(posX, posY, spawnPos.z + 1f), Quaternion.identity);
             }
         }
-        else if (gc.scoreNum < 12500)
+        else if (gc.scoreNum < 12000)
         {
             if (noBlocksBetweenTraps > 0)
             {
@@ -215,7 +224,6 @@ public class ObstaclesSpawner : MonoBehaviour {
                 posX = 0;
                 regularBlocksBetweenTraps++;
                 newObstacle = Instantiate(obstaclePrefab[0], new Vector3(posX, 0, spawnPos.z + 1f), Quaternion.identity);
-                canContinue = true;
             }
             else
             {
@@ -224,7 +232,7 @@ public class ObstaclesSpawner : MonoBehaviour {
                 regularBlocksBetweenTraps = 0;
             }
         }
-        else if (gc.scoreNum < 20000 && canContinue)
+        else if (gc.scoreNum < 15000)
         {
             gc.nextLevel = 5;
             if (noBlocksBetweenTraps > 0)
@@ -275,18 +283,169 @@ public class ObstaclesSpawner : MonoBehaviour {
                 }
             }
         }
-        else if (gc.scoreNum < 21000)
+        else if (gc.scoreNum < 16000)
+        {
+            if (noBlocksBetweenTraps > 0)
+            {
+                newObstacle = Instantiate(obstaclePrefab[3], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
+                noBlocksBetweenTraps--;
+                regularBlocksBetweenTraps++;
+            }
+            else
+            {
+                if (regularBlocksBetweenTraps < 6)
+                {
+                    regularBlocksBetweenTraps++;
+                    newObstacle = Instantiate(obstaclePrefab[0], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
+                }
+                else
+                {
+                    if(!swipeHelpIce)
+                    {
+                        swipeHelpIce = true;
+                        StartCoroutine(SwipeHelp(4));
+                    }
+                    newObstacle = Instantiate(obstaclePrefab[4], new Vector3(0, 1, spawnPos.z + 1f), Quaternion.identity);
+                    Instantiate(obstaclePrefab[0], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
+                    regularBlocksBetweenTraps = 3;
+                }
+            }
+        }
+        else if (gc.scoreNum < 18000)
+        {
+            gc.nextLevel = 6;
+            if (noBlocksBetweenTraps > 0)
+            {
+                newObstacle = Instantiate(obstaclePrefab[3], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
+                noBlocksBetweenTraps--;
+                regularBlocksBetweenTraps++;
+            }
+            else
+            {
+                if (regularBlocksBetweenTraps > 0)
+                {
+                    posX = 0;
+                    posY = 0;
+                    regularBlocksBetweenTraps--;
+                    newObstacle = Instantiate(obstaclePrefab[0], new Vector3(posX, posY, spawnPos.z + 1f), Quaternion.identity);
+                }
+                else
+                {
+                    int obst = Random.Range(0, 100);
+                    if (obst < 10)
+                    {
+                        newObstacle = Instantiate(obstaclePrefab[2], new Vector3(0, 0.55f, spawnPos.z + 1f), Quaternion.Euler(0, 90, 0));
+                        noBlocksBetweenTraps = 3;
+                        regularBlocksBetweenTraps = 1;
+                    }
+                    else
+                    {
+                        posX = Random.Range(-1, 2);
+                        if (posX == 0)
+                        {
+                            posY = Random.Range(-100, 100);
+
+                            if (posY < 0)
+                                posY = -1;
+                            else
+                                posY = 1;
+                        }
+
+                        regularBlocksBetweenTraps = 1;
+
+                        obstacleType = Random.Range(-50, 50);
+                        if (obstacleType > 0)
+                            newObstacle = Instantiate(obstaclePrefab[0], new Vector3(posX, posY, spawnPos.z + 1f), Quaternion.identity);
+                        else if (obstacleType > -35)
+                            newObstacle = Instantiate(obstaclePrefab[1], new Vector3(posX, posY, spawnPos.z + 1f), Quaternion.identity);
+                        else
+                        {
+                            newObstacle = Instantiate(obstaclePrefab[4], new Vector3(0, 1, spawnPos.z + 1f), Quaternion.identity);
+                            Instantiate(obstaclePrefab[0], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
+                        }
+                    }
+                }
+            }
+        }
+        else if (gc.scoreNum < 19000)
         {
             if (regularBlocksBetweenTraps < 6)
             {
                 regularBlocksBetweenTraps++;
                 newObstacle = Instantiate(obstaclePrefab[0], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
             }
+
             else
             {
-                newObstacle = Instantiate(obstaclePrefab[4], new Vector3(0, 1, spawnPos.z + 1f), Quaternion.identity);
+                if (!swipeHelpBarrel)
+                {
+                    swipeHelpBarrel = true;
+                    StartCoroutine(SwipeHelp(0));
+                }
+                newObstacle = Instantiate(obstaclePrefab[5], new Vector3(0, 1, spawnPos.z + 1f), Quaternion.identity);
                 Instantiate(obstaclePrefab[0], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
                 regularBlocksBetweenTraps = 3;
+            }
+        }
+        else
+        {
+            gc.nextLevel = 7;
+            if (noBlocksBetweenTraps > 0)
+            {
+                newObstacle = Instantiate(obstaclePrefab[3], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
+                noBlocksBetweenTraps--;
+                regularBlocksBetweenTraps++;
+            }
+            else
+            {
+                if (regularBlocksBetweenTraps > 0)
+                {
+                    posX = 0;
+                    posY = 0;
+                    regularBlocksBetweenTraps--;
+                    newObstacle = Instantiate(obstaclePrefab[0], new Vector3(posX, posY, spawnPos.z + 1f), Quaternion.identity);
+                }
+                else
+                {
+                    int obst = Random.Range(0, 100);
+                    if (obst < 10)
+                    {
+                        newObstacle = Instantiate(obstaclePrefab[2], new Vector3(0, 0.55f, spawnPos.z + 1f), Quaternion.Euler(0, 90, 0));
+                        noBlocksBetweenTraps = 3;
+                        regularBlocksBetweenTraps = 1;
+                    }
+                    else
+                    {
+                        posX = Random.Range(-1, 2);
+                        if (posX == 0)
+                        {
+                            posY = Random.Range(-100, 100);
+
+                            if (posY < 0)
+                                posY = -1;
+                            else
+                                posY = 1;
+                        }
+
+                        regularBlocksBetweenTraps = 1;
+
+                        obstacleType = Random.Range(-60, 50);
+                        if (obstacleType > 0)
+                            newObstacle = Instantiate(obstaclePrefab[0], new Vector3(posX, posY, spawnPos.z + 1f), Quaternion.identity);
+                        else if (obstacleType > -20)
+                        {
+                            newObstacle = Instantiate(obstaclePrefab[5], new Vector3(0, 1, spawnPos.z + 1f), Quaternion.identity);
+                            Instantiate(obstaclePrefab[0], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
+                        }
+                        else if (obstacleType > -35)
+                            newObstacle = Instantiate(obstaclePrefab[1], new Vector3(posX, posY, spawnPos.z + 1f), Quaternion.identity);
+                        else
+                        {
+                            newObstacle = Instantiate(obstaclePrefab[4], new Vector3(0, 1, spawnPos.z + 1f), Quaternion.identity);
+                            Instantiate(obstaclePrefab[0], new Vector3(0, 0, spawnPos.z + 1f), Quaternion.identity);
+                        }
+                    }
+                }
             }
         }
         spawnPos = newObstacle.transform.position;
@@ -327,14 +486,12 @@ public class ObstaclesSpawner : MonoBehaviour {
             if (obstacleMoveScripts.Count == 1)
                 registerSwipeScript.UpdateFirstObstacle(obstacleMoveScripts[0]);
         }
-        //else
-        //{
-        //    int toSpawnOrNotTospawn = Random.Range(-100, 10);
-        //    if(toSpawnOrNotTospawn > 0)
-        //    {
-        //        newObstacle = Instantiate(obstaclePrefab[4], new Vector3(0, 0.5f, spawnPos.z), Quaternion.Euler(0,180,0));
-        //    }
-        //}
+        else
+        {
+            int coinSpawn = Random.Range(-20, 1 + gc.nextLevel);
+            if (coinSpawn > 0 && noBlocksBetweenTraps == 0)
+                Instantiate(coinPrefab, newObstacle.transform.position + Vector3.up * 0.9f, Quaternion.Euler(90,0,0));
+        }
     }
     public void RemoveFirstObstacle()
     {
@@ -386,8 +543,17 @@ public class ObstaclesSpawner : MonoBehaviour {
             {
                 if (!checkForPlayerPass)
                 {
-                    playerMovement.GameOver(3);
-                    swipeIcon.gameObject.SetActive(false);
+                    if (obstacleMoveScripts[0].CompareTag("Barrel"))
+                    {
+                        playerMovement.GameOver(5);
+                        Instantiate(explosionPrefab, obstacleMoveScripts[0].gameObject.transform.position, Quaternion.identity);
+                        obstacleMoveScripts[0].gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        playerMovement.GameOver(3);
+                        swipeIcon.gameObject.SetActive(false);
+                    }
                 }
             }
         }
@@ -430,24 +596,27 @@ public class ObstaclesSpawner : MonoBehaviour {
 
     public IEnumerator SwipeHelp(int dir)
     {
-        yield return new WaitForSeconds(spawnBlockTime * 2);
+        yield return new WaitForSeconds(spawnBlockTime);
         if (obstacleMoveScripts.Count > 0)
         {
-            if (dir == 0 && !obstacleMoveScripts[0].leftPos)
+            if (!swipeHelpBarrel)
             {
-                yield break;
-            }
-            if (dir == 1 && !obstacleMoveScripts[0].rightPos)
-            {
-                yield break;
-            }
-            else if(dir == 2 && !obstacleMoveScripts[0].bottomPos)
-            {
-                yield break;
-            }
-            else if(dir == 3 && !obstacleMoveScripts[0].topPos && !obstacleMoveScripts[0].neutralPosSpikedFloor)
-            {
-                yield break;
+                if (dir == 0 && !obstacleMoveScripts[0].leftPos)
+                {
+                    yield break;
+                }
+                if (dir == 1 && !obstacleMoveScripts[0].rightPos)
+                {
+                    yield break;
+                }
+                else if (dir == 2 && !obstacleMoveScripts[0].bottomPos)
+                {
+                    yield break;
+                }
+                else if (dir == 3 && !obstacleMoveScripts[0].topPos && !obstacleMoveScripts[0].neutralPosSpikedFloor)
+                {
+                    yield break;
+                }
             }
         }
         else
@@ -468,6 +637,9 @@ public class ObstaclesSpawner : MonoBehaviour {
                 break;
             case 3:
                 swipeAnim.SetTrigger("down");
+                break;
+            case 4:
+                swipeAnim.SetTrigger("hold");
                 break;
         }
 

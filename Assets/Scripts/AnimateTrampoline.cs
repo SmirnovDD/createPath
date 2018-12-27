@@ -6,12 +6,7 @@ public class AnimateTrampoline : MoveOnSwipe {
         {
             anim.SetBool("jump", true);
             playerMovement.PlayerJump(transform.position.z + 4);
-            Invoke("SelfDestroy", 3f);
+            Destroy(gameObject, 3f);
         }
-    }
-
-    private void SelfDestroy()
-    {
-        Destroy(gameObject);
     }
 }

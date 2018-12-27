@@ -3,8 +3,9 @@
     {
         if (swipeDir == RegisterSwipe.Swipes.hold)
         {
-            iceMeltTime += 0.025f;
+            iceMeltTime += 0.03f;
             anim.SetFloat("touchHold", iceMeltTime);
+            LowerHeight();
             if (iceMeltTime >= 1f)
             {
                 GetComponent<ChangePlayerPass>().PlayerPass();
